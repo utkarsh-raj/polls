@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Opinion Poll</title>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+        integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+        crossorigin="anonymous">
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous">
+        <script type="text/javascript" src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+        <style type="text/css">
+            #footnote {
+                text-align: center;
+                margin-top: 10%;
+                margin-bottom: 3%;
+            }
+
+            h2 {
+                font-size: 28px;
+            }
+
+            h1 {
+                text-align: center;
+            }
+        </style>
+    </head>
+
+    <body>
+        
+        <div class="container">
+            <h1>The trending questions for today!</h1>
+            <hr>
+            <%
+                
+                var i = 0;
+                for (i = 0; i < questions.length; i++) {
+            
+            %>
+
+            <div class="row">
+
+            <% if (i % 2 === 0) { %>
+                <div class="col-sm-5">
+                    <div class="chartContainer" style="height: 300px; width: 100%;"></div>
+                </div>
+                <div class="col-sm-7">
+                    <h2>
+                        <%= questions[i].question_content; %>
+                    </h2>
+
+                    
+                    <br>
+                    <ul class="list-group">
+                        
+                        <%
+                            var n = 0;
+                            for (n = 0; n < choices.length; n++) {
+                                if (choices[n].question_id == questions[i]._id) {
+                        %>
+                                    <a href=<%= "/vote/" + choices[n]._id%>>
+                                    <li class="list-group-item">
+                                        <span class="badge"><%= choices[n].votes; %></span>
+                                        <%= choices[n].choice_content; %>
+
+                                    </li>
+                                </a>
+                        <br>    
+                    
+                    
+                    <% } %>
+                    
+                    <% } %>
+                    </ul>
+                </div>
+
+            <% } %>
+
+            <hr>
+            <% if (i % 2 !== 0) {%>
+                <div class="col-sm-7">
+
+                    <h2>
+                        <%= questions[i].question_content; %>
+                    </h2>
+
+                    <br>
+
+                    <ul class="list-group">
+                        
+                        <%
+                            var n = 0;
+                            for (n = 0; n < choices.length; n++) {
+                                if (choices[n].question_id == questions[i]._id) {
+                        %>
+                                    <a href=<%= "/vote/" + choices[n]._id%>>
+                                    <li class="list-group-item">
+                                        <span class="badge"><%= choices[n].votes; %></span>
+                                        <%= choices[n].choice_content; %>
+
+                                    </li>
+                                </a>
+                        <br>    
+                    
+                    
+                    <% } %>
+                    
+                    <% } %>
+                    </ul>
+
+
+                    
+                </div>
+                <div class="col-sm-5">
+                    <div class="chartContainer" style="height: 300px; width: 100%;"></div>
+                </div>
+                
+            <% } %>
+            <hr>
+
+
+            </div>
+            <%  }%>
+            <a href="/">Go back</a>
+        </div>
+
+
+
+        <script type="text/javascript">
+            window.onload = function () {
+                <%
+                var i =0;
+                for (i = 0; i < questions.length; i++) {
+                %>
+                    chartConfigure = {
+                            legend: {
+                                maxWidth: 350,
+                                itemWidth: 120
+                            },
+                            data: [
+                            {
+                                type: "pie",
+                                showInLegend: true,
+                                legendText: "{indexLabel}",
+                                dataPoints: [
+                                    <%
+                                        var n = 0;
+                                        for (n = 0; n < choices.length; n++) {
+                                            if (choices[n].question_id == questions[i]._id) {
+                                    %>
+                                                {y: <%= choices[n].votes; %>, indexLabel: "<%= choices[n].choice_content; %>"},
+                                                
+                                    
+                                    <% } } %>
+                                ]
+                            }
+                            ]
+                        }
+                        var chart = new CanvasJS.Chart( document.querySelectorAll(".chartContainer")[<%= i %>], chartConfigure);
+                        chart.render();
+                <% } %>
+            }
+        </script>
+
+        <div class="container" id="footnote">
+            <hr>
+            Follow the code on <i class="fab fa-github"></i> <a href="http://www.github.com/utkarsh-raj">GitHub</a>
+        </div>
+
+
+    </body>
+</html>
