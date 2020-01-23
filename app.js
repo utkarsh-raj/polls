@@ -18,8 +18,10 @@ app.use(express.static("public"));
 mongoose.connect("mongodb+srv://utkarsh:sona2503@cluster0-0cl3l.mongodb.net/test?retryWrites=true&w=majority", { useNewUrlParser: true , useUnifiedTopology: true});
 
 
-var saltRounds = 8;
-var session = [];
+var session = {
+    userId: null,
+    loggedIn: false
+};
 
 // Models
 
@@ -48,10 +50,34 @@ var Choices = mongoose.model("Choices", choicesSchema);
 // ===========================================================
 
 app.get("/", function (req, res) {
-    res.render("landing");
+    res.render("welcome");
 });
 
 // GET Index
+
+app.get("/signup", function(req, res) {
+    res.render("signup");
+});
+
+app.post("/signup", function(req, res) {
+    User.create({
+        username: req.body.username,
+        password: password
+    }, function(err, user) {
+        if (err) {
+            console.log(err);
+        }
+        else {
+            session.userId = user._id;
+            session.loggedIn = true;
+
+            console.log("User creation done");
+            console.log(user);
+
+            res.redirect("/login");
+        }
+    })
+});
 
 app.get("/index", function (req, res) {
     Question.find({}, function(err, questions) {
