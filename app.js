@@ -50,6 +50,9 @@ var Choices = mongoose.model("Choices", choicesSchema);
 // ===========================================================
 
 app.get("/", function (req, res) {
+    if (session.loggedIn) {
+        res.redirect(302, "/index");
+    }
     res.render("welcome");
 });
 
@@ -60,26 +63,62 @@ app.get("/signup", function(req, res) {
 });
 
 app.post("/signup", function(req, res) {
-    User.create({
-        username: req.body.username,
+    var username = req.body.username;
+    var password = req.body.password;
+    
+    
+    User.find({
+        username: username,
         password: password
     }, function(err, user) {
         if (err) {
             console.log(err);
         }
         else {
-            session.userId = user._id;
-            session.loggedIn = true;
-
+            console.log("The user is registered!");
+            res.redirect(302, "/login");
+        }
+    })
+    User.create({
+        username: username,
+        password: password
+    }, function(err, user) {
+        if (err) {
+            console.log(err);
+        }
+        else {
             console.log("User creation done");
             console.log(user);
+            console.log(session);
 
             res.redirect("/login");
+        }
+    });
+});
+
+app.get("/login", function(req, res) {
+    res.render("login");
+})
+
+app.post("/login", function(req, res) {
+    var username = req.body.username;
+    var password = req.body.password;
+    User.find({
+        username: username,
+        password: password
+    }, function(err, user) {
+        if (err) {
+            console.log(err);
+        }
+        else {
+            console.log(user);
+            console.log(session);
+            res.redirect(302, "/index/" + user._id);
         }
     })
 });
 
-app.get("/index", function (req, res) {
+app.get("/index/:userId", function (req, res) {
     Question.find({}, function(err, questions) {
         if (err) {
             console.log(err);
