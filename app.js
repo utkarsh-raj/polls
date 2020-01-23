@@ -113,12 +113,28 @@ app.post("/login", function(req, res) {
         else {
             console.log(user);
             console.log(session);
-            res.redirect(302, "/index/" + user._id);
+            res.redirect(302, "/landing/" + user._id);
         }
     })
 });
 
+app.get("/landing/:userId", function(req, res) {
+
+    var userId = req.params.userId;
+    User.find({
+        _id: userId
+    }, function(err, user) {
+        if (err) {
+            console.log(err);
+        }
+        else {
+            res.render("landing", { user: user })
+        }
+    });
+});
+
 app.get("/index/:userId", function (req, res) {
+    var userId = req.params.userId;
     Question.find({}, function(err, questions) {
         if (err) {
             console.log(err);
