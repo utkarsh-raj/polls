@@ -23,8 +23,15 @@ var session = [];
 
 // Models
 
+var userSchema = new mongoose.Schema({
+    username: {type: String, default: "default_username"},
+    password: {type: String, default: "password"},
+});
+
 var questionSchema = new mongoose.Schema({
-    question_content: {type:String, default:"Question Content"}
+    question_content: {type:String, default:"Question Content"},
+    asked_by: {type: String},
+    answered_by: {type: Array}
 });
 
 var choicesSchema = new mongoose.Schema({
@@ -33,6 +40,7 @@ var choicesSchema = new mongoose.Schema({
     question_id: {type: String, default:null}
 });
 
+var User = mongoose.model("user", userSchema);
 var Question = mongoose.model("Question", questionSchema);
 var Choices = mongoose.model("Choices", choicesSchema);
 
