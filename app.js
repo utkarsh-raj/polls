@@ -65,6 +65,11 @@ app.get("/signup", function(req, res) {
 app.post("/signup", function(req, res) {
     var username = req.body.username;
     var password = req.body.password;
+    var r = req.body.r;
+
+    if (password !== r) {
+        res.redirect(302, "/signup");
+    }
     
     
     User.find({
@@ -75,23 +80,28 @@ app.post("/signup", function(req, res) {
             console.log(err);
         }
         else {
-            console.log("The user is registered!");
-            res.redirect(302, "/login");
-        }
-    })
-    User.create({
-        username: username,
-        password: password
-    }, function(err, user) {
-        if (err) {
-            console.log(err);
-        }
-        else {
-            console.log("User creation done");
             console.log(user);
-            console.log(session);
+            if (user.length === 0) {
+                User.create({
+                    username: username,
+                    password: password
+                }, function (err, user) {
+                    if (err) {
+                        console.log(err);
+                    }
+                    else {
+                        console.log("User creation done");
+                        console.log(user);
+                        console.log(session);
 
-            res.redirect("/login");
+                        res.redirect("/login");
+                    }
+                });
+            }
+            else {
+                console.log("The user is registered!");
+                res.redirect(302, "/login");
+            }
         }
     });
 });
@@ -113,7 +123,15 @@ app.post("/login", function(req, res) {
         else {
             console.log(user);
             console.log(session);
-            res.redirect(302, "/landing/" + user._id);
+            if (user.length === 0) {
+                console.log("Credentials are not right");
+                res.redirect(302, "/login");
+            }
+            else {
+                var url = "/landing/" + user[0]._id;
+                console.log(url);
+                res.redirect(302, url);
+            }
         }
     })
 });
@@ -121,6 +139,7 @@ app.post("/login", function(req, res) {
 app.get("/landing/:userId", function(req, res) {
 
     var userId = req.params.userId;
+    console.log(userId);
     User.find({
         _id: userId
     }, function(err, user) {
@@ -128,7 +147,7 @@ app.get("/landing/:userId", function(req, res) {
             console.log(err);
         }
         else {
-            res.render("landing", { user: user })
+            res.render("landing", { user: user[0] })
         }
     });
 });
@@ -156,8 +175,17 @@ app.get("/index/:userId", function (req, res) {
     });
 });
 
-app.get("/new", function (req ,res) {
-    res.render("new");
+app.get("/new/:userId", function (req ,res) {
+    User.find({
+        _id: userId
+    }, function(req, res) {
+        if (err) {
+            console.log(err);
+        }
+        else {
+            res.render("new", {user: user[0]});
+        }
+    });
 });
 
 app.post("/new", function (req, res) {
