@@ -32,8 +32,7 @@ var userSchema = new mongoose.Schema({
 
 var questionSchema = new mongoose.Schema({
     question_content: {type:String, default:"Question Content"},
-    asked_by: {type: String},
-    answered_by: {type: Array}
+    asked_by: {type: String}
 });
 
 var choicesSchema = new mongoose.Schema({
@@ -154,21 +153,31 @@ app.get("/landing/:userId", function(req, res) {
 
 app.get("/index/:userId", function (req, res) {
     var userId = req.params.userId;
-    Question.find({}, function(err, questions) {
+    User.find({
+        _id: userId
+    }, function(err, user) {
         if (err) {
             console.log(err);
         }
         else {
-            // console.log(questions);
-
-            // console.log(this.choices);
-
-            Choices.find({}, function(err, choices) {
+            Question.find({}, function (err, questions) {
                 if (err) {
-                    console.log(err); 
+                    console.log(err);
                 }
                 else {
-                    res.render("index", { questions: questions, choices: choices });
+                    // console.log(questions);
+
+                    // console.log(this.choices);
+
+                    Choices.find({}, function (err, choices) {
+                        if (err) {
+                            console.log(err);
+                        }
+                        else {
+                            questions.reverse();
+                            res.render("index", { user: user[0], questions: questions, choices: choices });
+                        }
+                    });
                 }
             });
         }
@@ -176,9 +185,10 @@ app.get("/index/:userId", function (req, res) {
 });
 
 app.get("/new/:userId", function (req ,res) {
+    var userId = req.params.userId;
     User.find({
         _id: userId
-    }, function(req, res) {
+    }, function(err, user) {
         if (err) {
             console.log(err);
         }
@@ -188,54 +198,108 @@ app.get("/new/:userId", function (req ,res) {
     });
 });
 
-app.post("/new", function (req, res) {
+app.post("/new/:userId", function (req, res) {
+    var userId = req.params.userId;
     var question = req.body.question;
     var choices = [req.body.choice1, req.body.choice2, req.body.choice3, req.body.choice4];
 
     // console.log(question);
 
-    Question.create({
-        question_content: question
-    }, function(err, question) {
+    User.find({
+        _id: userId
+    }, function(err, user) {
         if (err) {
             console.log(err);
         }
         else {
-            var i = 0;
-            for (i = 0; i < 4; i++) {
-                Choices.create({
-                    choice_content: choices[i],
-                    votes: 0,
-                    question_id: question._id
-                });
-            }
-            res.redirect(302, "/index");
+            Question.create({
+                question_content: question,
+                asked_by: user[0].username
+            }, function (err, question) {
+                if (err) {
+                    console.log(err);
+                }
+                else {
+                    var i = 0;
+                    for (i = 0; i < 4; i++) {
+                        Choices.create({
+                            choice_content: choices[i],
+                            votes: 0,
+                            question_id: question._id
+                        });
+                    }
+                    res.redirect(302, "/index/" + user[0]._id);
+                }
+            });
         }
     });
 });
 
-app.get("/vote/:choice_id", function(req, res) {
-    Choices.find({
-        _id: req.params.choice_id
-    }, function(err, choice) {
+app.get("/vote/:choice_id/:userId", function(req, res) {
+    var userId = req.params.userId;
+    User.find({
+        _id: userId
+    }, function(err, user) {
         if (err) {
             console.log(err);
         }
         else {
-            console.log(choice);
-            var updatedVotes = Number(choice[0].votes) + 1;
-            console.log(updatedVotes);
-            Choices.findByIdAndUpdate(
-                req.params.choice_id,
-            {  $set  :    { votes: updatedVotes}}, function(err, choice) {
+            Choices.find({
+                _id: req.params.choice_id
+            }, function (err, choice) {
                 if (err) {
-                    console.log(err ); 
+                    console.log(err);
                 }
                 else {
                     console.log(choice);
+                    var updatedVotes = Number(choice[0].votes) + 1;
+                    console.log(updatedVotes);
+                    Choices.findByIdAndUpdate(
+                        req.params.choice_id,
+                        { $set: { votes: updatedVotes } }, function (err, choice) {
+                            if (err) {
+                                console.log(err);
+                            }
+                            else {
+                                console.log(choice);
+                            }
+                        });
+                    res.redirect(302, "/index/" + user[0]._id);
                 }
             });
-            res.redirect(302, "/index");
+        }
+    });
+});
+
+app.get("/my_questions/:userId", function(req, res) {
+    var userId = req.params.userId;
+    User.find({
+        _id: userId
+    }, function (err, user) {
+        if (err) {
+            console.log(err);
+        }
+        else {
+            Question.find({}, function (err, questions) {
+                if (err) {
+                    console.log(err);
+                }
+                else {
+                    // console.log(questions);
+
+                    // console.log(this.choices);
+
+                    Choices.find({}, function (err, choices) {
+                        if (err) {
+                            console.log(err);
+                        }
+                        else {
+                            questions.reverse();
+                            res.render("my_questions", { user: user[0], questions: questions, choices: choices });
+                        }
+                    });
+                }
+            });
         }
     });
 });

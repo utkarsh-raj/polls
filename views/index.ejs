@@ -21,6 +21,10 @@
             h1 {
                 text-align: center;
             }
+
+            #back {
+                float: right;
+            }
         </style>
     </head>
 
@@ -29,7 +33,9 @@
         <div class="container">
             <h1>The trending questions for today!</h1>
 
+            <% var url = "/landing/" + user._id; %>
             <a href="/" id="back" class="btn btn-danger">Logout</a>
+            <a href=<%= url %> id="back" class="btn btn-primary">Go back</a>
             <hr>
             <%
                 
@@ -48,6 +54,9 @@
                     <h2>
                         <%= questions[i].question_content; %>
                     </h2>
+                    <h4>
+                        - by <strong><%= questions[i].asked_by %></strong>
+                    </h4>
 
                     
                     <br>
@@ -58,7 +67,7 @@
                             for (n = 0; n < choices.length; n++) {
                                 if (choices[n].question_id == questions[i]._id) {
                         %>
-                                    <a href=<%= "/vote/" + choices[n]._id%>>
+                                    <a href=<%= "/vote/" + choices[n]._id + "/" + user._id; %>>
                                     <li class="list-group-item">
                                         <span class="badge"><%= choices[n].votes; %></span>
                                         <%= choices[n].choice_content; %>
@@ -84,6 +93,10 @@
                         <%= questions[i].question_content; %>
                     </h2>
 
+                    <h4>
+                        - by <strong><%= questions[i].asked_by %></strong>
+                    </h4>
+
                     <br>
 
                     <ul class="list-group">
@@ -93,7 +106,7 @@
                             for (n = 0; n < choices.length; n++) {
                                 if (choices[n].question_id == questions[i]._id) {
                         %>
-                                    <a href=<%= "/vote/" + choices[n]._id%>>
+                                    <a href=<%= "/vote/" + choices[n]._id + "/" + user._id; %>>
                                     <li class="list-group-item">
                                         <span class="badge"><%= choices[n].votes; %></span>
                                         <%= choices[n].choice_content; %>

@@ -13,6 +13,10 @@
             margin-top: 10%;
             margin-bottom: 3%;
         }
+
+		#back {
+			float: right;
+		}
     </style>
 </head>
 
@@ -21,16 +25,21 @@
 
     <div class="container">
         <div class="jumbotron">
-            <h1 id="main">Opinion Polls</h1>
+			<h1 id="main">Ask the world, <%= user.username %></h1>
+			
+			<% var url_go = "/index/" + user._id; %>
+			<a href="/" id="back" class="btn btn-danger">Logout</a>
+			<a href=<%= url_go %> id="back" class="btn btn-primary">Go back</a>
 
             <p>
-                Find the hottest questions and the world's opinions!
-            </p>
+				Ask anything you want to and we will get you the world's opinion!
+			</p>
 
         </div>
 
         <div class="container">
-            <form action="/new" method="POST" class="form-horizontal">
+			<%var url = "/new/" + user._id; %>
+            <form action="<%= url %>" method="POST" class="form-horizontal">
 	            <div class="form-group">
 	                <label for="question" class="col-sm-2 control-label">Question</label>
 	                <div class="col-sm-10">
@@ -63,7 +72,7 @@
 	            </div>
 	            <div class="form-group">
 	                <div class="col-sm-offset-2 col-sm-10">
-	                  <button type="submit" class="btn btn-lg btn-success">Get me in!</button>
+	                  <button type="submit" class="btn btn-lg btn-success">Submit now!</button>
 	                </div>
 	            </div>
 	             
