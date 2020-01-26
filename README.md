@@ -6,6 +6,7 @@ Please visit https://rocky-basin-25590.herokuapp.com for the live version
 The features incorporated are:
 - Multi user authentication system
   - Users can login and signup
+  - Users will be redirected to the login page if the password is wrong
   - The app can simultaneously handle multiple operations
 - User portal
   - User can add new questions
