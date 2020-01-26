@@ -69,40 +69,41 @@ app.post("/signup", function(req, res) {
     if (password !== r) {
         res.redirect(302, "/signup");
     }
-    
-    
-    User.find({
-        username: username,
-        password: password
-    }, function(err, user) {
-        if (err) {
-            console.log(err);
-        }
-        else {
-            console.log(user);
-            if (user.length === 0) {
-                User.create({
-                    username: username,
-                    password: password
-                }, function (err, user) {
-                    if (err) {
-                        console.log(err);
-                    }
-                    else {
-                        console.log("User creation done");
-                        console.log(user);
-                        console.log(session);
 
-                        res.redirect("/login");
-                    }
-                });
+    else {
+        User.find({
+            username: username,
+            password: password
+        }, function (err, user) {
+            if (err) {
+                console.log(err);
             }
             else {
-                console.log("The user is registered!");
-                res.redirect(302, "/login");
+                console.log(user);
+                if (user.length === 0) {
+                    User.create({
+                        username: username,
+                        password: password
+                    }, function (err, user) {
+                        if (err) {
+                            console.log(err);
+                        }
+                        else {
+                            console.log("User creation done");
+                            console.log(user);
+                            console.log(session);
+
+                            res.redirect("/login");
+                        }
+                    });
+                }
+                else {
+                    console.log("The user is registered!");
+                    res.redirect(302, "/login");
+                }
             }
-        }
-    });
+        });
+    }
 });
 
 app.get("/login", function(req, res) {
