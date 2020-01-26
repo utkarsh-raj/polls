@@ -26,7 +26,7 @@
             <div class="jumbotron">
                 <h1 id="main">Hi, <%= user.username %></h1>
 
-                <a href="/" id="back" class="btn btn-danger">Logout</a>
+                <a href="/" id="back" class="btn btn-danger"><i class="fas fa-sign-out-alt"></i> Logout</a>
             
                 <p>
                     Find the hottest questions and the world's opinions!
@@ -42,12 +42,12 @@
                         <% var url_index = "/index/" + user._id%>
                         <% var url_new = "/new/" + user._id%>
                         <% var url_my_questions = "/my_questions/" + user._id%>
-                        <a href="<%= url_index%>" class="btn btn-primary">View Questions</a>
-                        <a href="<%= url_my_questions%>" class="btn btn-primary">My Questions</a>
+                        <a href="<%= url_index%>" class="btn btn-primary"><i class="fas fa-question-circle"></i> View Questions</a>
+                        <a href="<%= url_my_questions%>" class="btn btn-primary"><i class="fas fa-pencil-alt"></i> My Questions</a>
                     </div>
                     <div class="col-sm-5">
                         <h3>Have a question for all?</h3>
-                        <a href="<%= url_new %>" class="btn btn-primary">Add Question</a>
+                        <a href="<%= url_new %>" class="btn btn-primary"><i class="fas fa-plus-square"></i> Add Question</a>
                     </div>
                     <div class="col-sm-2"></div>
                 </div>

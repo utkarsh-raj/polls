@@ -28,8 +28,8 @@
 			<h1 id="main">Ask the world, <%= user.username %></h1>
 			
 			<% var url_go = "/index/" + user._id; %>
-			<a href="/" id="back" class="btn btn-danger">Logout</a>
-			<a href=<%= url_go %> id="back" class="btn btn-primary">Go back</a>
+			<a href="/" id="back" class="btn btn-danger"><i class="fas fa-sign-out-alt"></i> Logout</a>
+			<a href=<%= url_go %> id="back" class="btn btn-primary"><i class="fas fa-backward"></i> Go back</a>
 
             <p>
 				Ask anything you want to and we will get you the world's opinion!
@@ -78,7 +78,6 @@
 	             
 	        </form>
         </div>
-        <a href="/">Go back</a>
     </div>
 
     <div class="container" id="footnote">
