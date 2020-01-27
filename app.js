@@ -93,7 +93,9 @@ app.post("/signup", function(req, res) {
                             console.log(user);
                             console.log(session);
 
-                            res.redirect("/login");
+                            var url = "/landing/" + user._id;
+                            console.log(url);
+                            res.redirect(302, url);
                         }
                     });
                 }
